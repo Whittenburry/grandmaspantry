@@ -348,12 +348,12 @@ alive. It is out of v1 only because the app must first be worth being reminded a
 | Phase | Content |
 |---|---|
 | 0 | Repo hygiene: `.gitignore`, untrack `node_modules/` and `api/database.sqlite`, tag `v0-mvp` |
-| 1 | Foundation: Vitest, PWA plugin, `domain/` and `data/` layers with seeded locations and jar catalog, test-first |
+| 1 | Foundation: Vitest, `domain/` and `data/` layers with seeded locations and jar catalog, test-first |
 | 2 | Stock core: shelf with category and location filters, add/edit, use one, location-scoped shelf check, empty-jar return |
 | 3 | Recipes with photos |
 | 4 | Labels: screen, single print, sheet print, QR |
 | 5 | Backup, restore, and the backup nudge |
-| 6 | Offline and install polish, persistent-storage request, deploy, on-device testing on a Pixel 9 Pro XL |
+| 6 | `vite-plugin-pwa`, offline and install polish, persistent-storage request, deploy, on-device testing on a Pixel 9 Pro XL |
 
 Each phase is developed on its own branch and merged to `main` once it stands alone, so
 `main` stays deployable and every merge is a review checkpoint.
