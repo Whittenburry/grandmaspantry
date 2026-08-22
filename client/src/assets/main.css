@@ -1,17 +1,13 @@
 :root {
   /* Orchard & Garden Palette */
-  --bg-color: #fdfaf6;
-  /* Soft Off-White/Cream */
-  --primary-color: #8aab91;
-  /* Soft Sage Green */
-  --secondary-color: #f0c9a7;
-  /* Muted Peach/Apricot */
-  --warning-color: #d68a7a;
-  /* Soft Terracotta/Dusty Rose */
-
+  --bg-color: #fdfaf6; /* Soft Off-White/Cream */
+  --primary-color: #8aab91; /* Soft Sage Green */
+  --secondary-color: #f0c9a7; /* Muted Peach/Apricot */
+  --warning-color: #d68a7a; /* Soft Terracotta/Dusty Rose */
+  
   --text-dark: #3a403a;
   --text-muted: #6b756b;
-
+  
   /* Glassmorphism Tokens */
   --glass-bg: rgba(255, 255, 255, 0.4);
   --glass-border: rgba(255, 255, 255, 0.5);
@@ -25,11 +21,51 @@
 }
 
 body {
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Quicksand', sans-serif;
   background-color: var(--bg-color);
-  background: radial-gradient(circle at top left, #ffffff, var(--bg-color));
   color: var(--text-dark);
   min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Beautiful ambient shapes for glassmorphism refraction */
+body::before, body::after {
+  content: '';
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(80px);
+  z-index: -1;
+  animation: float 20s infinite ease-in-out alternate;
+  opacity: 0.6;
+}
+
+body::before {
+  width: 50vw;
+  height: 50vw;
+  background: var(--primary-color);
+  top: -10vw;
+  left: -10vw;
+}
+
+body::after {
+  width: 40vw;
+  height: 40vw;
+  background: var(--secondary-color);
+  bottom: -10vw;
+  right: -10vw;
+  animation-delay: -10s;
+}
+
+@keyframes float {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(5%, 10%) scale(1.1); }
+  100% { transform: translate(-5%, 5%) scale(0.9); }
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
 }
 
 /* Global Glass Card Utility */
