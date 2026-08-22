@@ -2,6 +2,15 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Start here
+
+**Read [`docs/PROGRESS.md`](docs/PROGRESS.md) before doing anything else.** It carries the
+current position, the decisions already settled, and notes left for whoever picks the work
+up next. The design spec and the active implementation plan are linked from it.
+
+The description below covers the repository as it stands today. The project is mid-rewrite
+toward a local-first PWA — `PROGRESS.md` says how far along that is.
+
 ## What this is
 
 Grandma's Shop — a home-canning inventory tracker. Two independent npm packages, no monorepo tooling:
