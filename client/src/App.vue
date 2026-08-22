@@ -26,6 +26,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
   padding: 1rem 2rem;
   background: var(--glass-bg);
   backdrop-filter: blur(12px);
@@ -37,13 +39,15 @@
 }
 
 .glass-nav h1 {
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   color: var(--text-dark);
   margin: 0;
+  font-family: 'Playfair Display', serif;
 }
 
 .links {
   display: flex;
+  flex-wrap: wrap;
   gap: 1.5rem;
 }
 
@@ -65,5 +69,20 @@
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
+}
+
+@media (max-width: 768px) {
+  .glass-nav {
+    flex-direction: column;
+    padding: 1rem;
+    text-align: center;
+  }
+  .links {
+    justify-content: center;
+    gap: 1rem;
+  }
+  .main-content {
+    padding: 1rem;
+  }
 }
 </style>
