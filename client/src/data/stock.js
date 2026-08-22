@@ -1,5 +1,6 @@
 import { openDatabase } from './db.js'
 import { validateStockInput } from '../domain/validation.js'
+import { CATEGORY_CANNED, CATEGORY_SUPPLY } from '../domain/categories.js'
 
 function assertValid(item) {
   const problems = validateStockInput(item)
@@ -71,6 +72,107 @@ export async function updateStock(id, patch) {
     id: existing.id,
     createdAt: existing.createdAt,
     updatedAt: new Date().toISOString(),
+  }
+  assertValid(updated)
+
+  await db.put('stock', updated)
+  return updated
+}
+
+export const SUPPLY_EMPTY_JAR = 'empty-jar'
+
+/**
+ * Finds the open empty-jar record for this jar type and adds one, creating
+ * the record if she has never had empties of this type before. Matching is
+ * on jarTypeId, not size, so a wide-mouth quart returns a wide-mouth quart.
+ *
+ * Runs inside the caller's transaction so the decrement and the return
+ * either both land or neither does.
+ */
+async function returnEmptyJar(store, jarTypeId, now) {
+  const all = await store.getAll()
+  const existing = all.find(
+    (i) =>
+      i.category === CATEGORY_SUPPLY &&
+      i.supplyType === SUPPLY_EMPTY_JAR &&
+      i.jarTypeId === jarTypeId &&
+      !i.archivedAt
+  )
+
+  if (existing) {
+    const updated = { ...existing, quantity: existing.quantity + 1, updatedAt: now }
+    await store.put(updated)
+    return updated
+  }
+
+  const created = {
+    id: crypto.randomUUID(),
+    category: CATEGORY_SUPPLY,
+    name: 'Empty jars',
+    quantity: 1,
+    initialQuantity: 1,
+    unit: 'jars',
+    dateStocked: now.slice(0, 10),
+    locationId: null,
+    lastVerifiedAt: now,
+    useByDate: null,
+    notes: '',
+    recipeId: null,
+    jarTypeId,
+    method: '',
+    supplyType: SUPPLY_EMPTY_JAR,
+    archivedAt: null,
+    createdAt: now,
+    updatedAt: now,
+  }
+  await store.put(created)
+  return created
+}
+
+export async function useOne(id) {
+  const db = await openDatabase()
+  const tx = db.transaction('stock', 'readwrite')
+  const store = tx.objectStore('stock')
+
+  const existing = await store.get(id)
+  if (!existing) throw new Error(`No stock item with id ${id}`)
+  if (existing.quantity <= 0) {
+    throw new Error(`${existing.name} is already used up`)
+  }
+
+  const now = new Date().toISOString()
+  const quantity = existing.quantity - 1
+  const item = {
+    ...existing,
+    quantity,
+    // Handling an item is evidence of its count, so this counts as a check.
+    lastVerifiedAt: now,
+    updatedAt: now,
+    archivedAt: quantity === 0 ? now : existing.archivedAt,
+  }
+  await store.put(item)
+
+  let returnedJar = null
+  if (item.category === CATEGORY_CANNED && item.jarTypeId) {
+    returnedJar = await returnEmptyJar(store, item.jarTypeId, now)
+  }
+
+  await tx.done
+  return { item, returnedJar }
+}
+
+export async function verifyCount(id, quantity) {
+  const db = await openDatabase()
+  const existing = await db.get('stock', id)
+  if (!existing) throw new Error(`No stock item with id ${id}`)
+
+  const now = new Date().toISOString()
+  const updated = {
+    ...existing,
+    quantity,
+    lastVerifiedAt: now,
+    updatedAt: now,
+    archivedAt: quantity === 0 ? (existing.archivedAt ?? now) : null,
   }
   assertValid(updated)
 
