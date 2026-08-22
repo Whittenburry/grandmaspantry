@@ -1,0 +1,17 @@
+node_modules/
+dist/
+dist-ssr/
+coverage/
+
+*.sqlite
+*.sqlite-journal
+
+.DS_Store
+*.local
+.env
+.env.*
+!.env.example
+
+.vscode/*
+!.vscode/extensions.json
+.idea/
