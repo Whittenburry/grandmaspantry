@@ -12,7 +12,7 @@ Prefer writing something down over remembering it.
 |---|---|
 | **Spec** | [`superpowers/specs/2026-08-22-grandmas-shop-design.md`](superpowers/specs/2026-08-22-grandmas-shop-design.md) |
 | **Active plan** | [`superpowers/plans/2026-08-22-foundation.md`](superpowers/plans/2026-08-22-foundation.md) |
-| **Last updated** | 2026-08-22 |
+| **Last updated** | 2026-08-22 — phase 0 complete |
 
 ---
 
@@ -46,8 +46,8 @@ conversation to reach.
 
 | Phase | Status | Content |
 |---|---|---|
-| 0 | Not started | Repo hygiene: `.gitignore`, untrack `node_modules/` and the sqlite db, delete `api/` |
-| 1 | Not started | Foundation: Vitest, `domain/` and `data/` layers, test-first |
+| 0 | **Done** | Repo hygiene: `.gitignore`, untrack `node_modules/` and the sqlite db, delete `api/` |
+| 1 | In progress | Foundation: Vitest, `domain/` and `data/` layers, test-first |
 | 2 | Not planned | Stock core: shelf, add/edit, use one, location-scoped shelf check, empty-jar return |
 | 3 | Not planned | Recipes with photos |
 | 4 | Not planned | Labels: screen, single print, sheet print, QR |
@@ -59,12 +59,15 @@ so each gets its own plan once the layer beneath it is real and reviewed.
 
 ## Current position
 
-**Phase 0, Task 1, not yet started.** Nothing has been implemented. All work so far is
-documentation.
+**Phase 1, Task 2.** Phase 0 is merged to `main`.
 
-### Phase 0 — Repository hygiene
+### Phase 0 — Repository hygiene — Done
 
-- [ ] Task 1: Repository hygiene — branch `chore/repo-hygiene`
+- [x] Task 1: Repository hygiene — merged as `3937865`
+
+Tracked files went from 2,566 to 16. `node_modules/` and `api/database.sqlite` are
+untracked but still on disk; `api/` is deleted and recoverable at tag `v0-mvp`. The client
+still builds.
 
 ### Phase 1 — Foundation
 
