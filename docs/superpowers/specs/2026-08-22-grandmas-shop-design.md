@@ -88,9 +88,9 @@ is displayed.
 | `name` | string | "Strawberry Jam", "Ground Beef", "Pint Jars" |
 | `quantity` | number | Current count |
 | `initialQuantity` | number | What was originally stocked |
-| `unit` | string | `jars`, `lbs`, `packages`, `count` |
+| `unit` | string | Per item. `jars` for canned; `lbs` and `packs` are both first-class for freezer items, since the right one depends on the product. |
 | `dateStocked` | ISO date | Date canned / frozen / acquired |
-| `location` | string? | Optional free text — "basement shelf", "chest freezer" |
+| `locationId` | uuid? | Where it lives. See Location below. |
 | `lastVerifiedAt` | ISO datetime? | Set by shelf check |
 | `useByDate` | ISO date? | Optional, user-set. Never inferred by the app. |
 | `notes` | string? | |
@@ -100,10 +100,50 @@ is displayed.
 
 Category-specific optional fields:
 
-- **canned**: `jarSize` (Half-Pint / Pint / Quart), `jarMouth` (Regular / Wide),
-  `method` (free text, e.g. `WB 20 min` — entered by her, never computed by us)
-- **supply**: `supplyType` (`empty-jar` / `lid` / `ring` / `other`), plus `jarSize` and
-  `jarMouth` when the supply is an empty jar
+- **canned**: `jarTypeId` (see Jar catalog below), `method` (free text, e.g. `WB 20 min`
+  — entered by her, never computed by us)
+- **supply**: `supplyType` (`empty-jar` / `lid` / `ring` / `other`), plus `jarTypeId`
+  when the supply is an empty jar
+
+### Location
+
+`id`, `name`, `sortOrder`, `createdAt`.
+
+She stores goods in several places — a chest freezer in the basement, the kitchen
+fridge/freezer, and otherwise wherever there is space. Locations are a managed,
+user-extensible list rather than free text, seeded with **Basement freezer**, **Kitchen
+freezer**, **Basement shelf**, and **Pantry**, and addable inline while entering an item.
+
+This matters more than it first appears. When stock is spread across four places,
+"which of these is it in?" *is* the visibility problem the app exists to solve. The shelf
+view therefore supports grouping and filtering by location, and an item may be moved
+between locations without otherwise being edited.
+
+### Jar catalog
+
+`id`, `name`, `ounces`, `millilitres`, `mouth` (`Regular` | `Wide`), `isSeeded`, `sortOrder`.
+
+Jar sizes are a **seeded, user-extensible catalog**, not a pair of crossed enums. Crossing
+size against mouth type produces combinations that do not exist on a shelf; a catalog
+lists only real jars and lets her add any this list misses.
+
+Seeded from the standard Ball lineup:
+
+| Name | Volume | Mouth |
+|---|---|---|
+| Quarter-pint jelly | 4 oz / 125 mL | Regular |
+| Half-pint | 8 oz / 250 mL | Regular |
+| Half-pint jelly | 8 oz / 250 mL | Regular |
+| Three-quarter-pint jelly | 12 oz / 375 mL | Regular |
+| Pint | 16 oz / 500 mL | Regular |
+| Pint | 16 oz / 500 mL | Wide |
+| Pint and a half | 24 oz / 750 mL | Regular |
+| Quart | 32 oz / 1 L | Regular |
+| Quart | 32 oz / 1 L | Wide |
+| Half gallon | 64 oz / 2 L | Wide |
+
+The empty-jar return behaviour matches on `jarTypeId`, so a wide-mouth quart returns a
+wide-mouth quart.
 
 ### Recipe
 
@@ -139,8 +179,10 @@ in the approximate form described by the honesty rule.
 
 ## Screens
 
-**Shelf (home)** — oldest first, always. Each row shows the item, plain-language age, and
-approximate count. Answers *"what should I open next?"* Filterable by category.
+**Shelf (home)** — oldest first, always. Each row shows the item, plain-language age,
+approximate count, and where it lives. Answers *"what should I open next?"* and
+*"which freezer is it in?"* Filterable by category and by location, and groupable by
+location for walking one storage space at a time.
 
 **Add item** — minimal fields, date defaults to today. For canned items, completing the
 form leads directly to the Label screen.
@@ -152,11 +194,13 @@ session. Printed labels carry an optional QR code.
 **Item detail** — particulars, plus one-tap *Used one*, *Fix the count*, and *All gone*.
 
 **Shelf check** — the reconciliation flow. Tap through items confirming or correcting
-counts while standing at the shelf. Sets `lastVerifiedAt`. Target: under 30 seconds.
+counts while standing at the shelf. Scopeable to **one location**, since she will be
+standing in front of the basement freezer, not all four places at once. Sets
+`lastVerifiedAt`. Target: under 30 seconds per location.
 
 **Recipes** — her book, searchable, with photos.
 
-**Settings** — backup and restore, jar sizes, print layout.
+**Settings** — backup and restore, locations, jar catalog, print layout.
 
 ## Behaviors
 
@@ -235,6 +279,13 @@ app-shell caching, and an update prompt. Deployment is a static free-tier host
 (Cloudflare Pages or Netlify) with SPA fallback configured, which `createWebHistory`
 requires.
 
+**Target platform is Chrome on Android** — both user zero and the author carry a Pixel 9
+Pro XL, so the app can be tested on the exact hardware it will run on. This is a genuine
+simplification: Android PWA installs behave like real apps, IndexedDB is durable,
+persistent-storage grants are reliable, camera access for QR scanning is well supported,
+and Web Push actually works. Desktop browsers are supported for the printing flow.
+Safari/iOS is not a v1 target and its constraints do not shape the design.
+
 ## Testing
 
 The repo currently has no tests. This introduces the first suite.
@@ -247,6 +298,10 @@ The repo currently has no tests. This introduces the first suite.
 
 Domain and data layers are developed test-first.
 
+Automated tests do not cover install, print output, or QR scanning. Those are verified by
+hand on a Pixel 9 Pro XL, which the author also owns — so every device-dependent claim in
+this design can be checked on the exact hardware user zero will use.
+
 ## Failure modes designed for
 
 - **IndexedDB unavailable** (private browsing): say so loudly on a dedicated screen. Never
@@ -254,8 +309,10 @@ Domain and data layers are developed test-first.
 - **Storage quota exceeded** on photos: warn, and offer to downscale before saving.
 - **Invalid or newer backup file**: refuse with a clear explanation, change nothing.
 - **Service worker update available**: prompt to reload rather than swapping under her.
-- **iOS storage eviction**: prompt to install to the home screen, and lean on the backup
-  nudge, since a non-installed web app's storage is evictable.
+- **Storage durability**: prompt to install to the home screen and request persistent
+  storage via the Storage API. Chrome on Android grants this readily to installed apps,
+  so eviction is a manageable risk rather than a looming one — but the backup nudge
+  remains the real answer to a lost or wiped phone.
 
 ## Non-goals
 
@@ -270,26 +327,33 @@ Explicitly out of scope for v1:
 - Native app store distribution
 - Brother thermal label printing (design accommodates it; v1 does not build it)
 
-## Open questions
+**Deferred rather than rejected:** rotation reminders via Web Push. These were previously
+ruled out as unreliable, but Chrome on Android supports them properly, and a monthly
+"your oldest jars" nudge is exactly the retrieval-side payoff that keeps an app like this
+alive. It is out of v1 only because the app must first be worth being reminded about.
 
-1. Does she store goods in more than one place (basement, garage, chest freezer)? The
-   optional `location` field covers this cheaply, but the UI treatment depends on the answer.
-2. Which jar sizes and mouth types does she actually use? Assumed Half-Pint / Pint / Quart
-   and Regular / Wide.
-3. Preferred freezer units — pounds, packages, or both?
-4. iPhone or Android? Affects install guidance and how hard we push the backup nudge.
+## Resolved during design
+
+1. **Multiple storage locations — yes.** A chest freezer in the basement, a fridge/freezer
+   in the kitchen, and otherwise wherever there is space. Hence Location as a first-class
+   managed entity rather than an optional string.
+2. **Jar sizes — the full standard lineup**, not three sizes. Modelled as a seeded,
+   extensible catalog; see Jar catalog above.
+3. **Freezer units — pounds and packs**, chosen per item, because the right unit depends
+   on the product.
+4. **Android, Pixel 9 Pro XL**, for both user zero and the author. See Delivery.
 
 ## Phases
 
 | Phase | Content |
 |---|---|
 | 0 | Repo hygiene: `.gitignore`, untrack `node_modules/` and `api/database.sqlite`, tag `v0-mvp` |
-| 1 | Foundation: Vitest, PWA plugin, `domain/` and `data/` layers, test-first |
-| 2 | Stock core: shelf with category filters, add/edit, use one, shelf check, empty-jar return |
+| 1 | Foundation: Vitest, PWA plugin, `domain/` and `data/` layers with seeded locations and jar catalog, test-first |
+| 2 | Stock core: shelf with category and location filters, add/edit, use one, location-scoped shelf check, empty-jar return |
 | 3 | Recipes with photos |
 | 4 | Labels: screen, single print, sheet print, QR |
 | 5 | Backup, restore, and the backup nudge |
-| 6 | Offline and install polish, deploy |
+| 6 | Offline and install polish, persistent-storage request, deploy, on-device testing on a Pixel 9 Pro XL |
 
 Each phase is developed on its own branch and merged to `main` once it stands alone, so
 `main` stays deployable and every merge is a review checkpoint.
