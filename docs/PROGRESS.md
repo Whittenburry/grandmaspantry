@@ -12,7 +12,7 @@ Prefer writing something down over remembering it.
 |---|---|
 | **Spec** | [`superpowers/specs/2026-08-22-grandmas-shop-design.md`](superpowers/specs/2026-08-22-grandmas-shop-design.md) |
 | **Active plan** | [`superpowers/plans/2026-08-22-foundation.md`](superpowers/plans/2026-08-22-foundation.md) |
-| **Last updated** | 2026-08-22 — phase 0 complete |
+| **Last updated** | 2026-08-22 — phase 0 done, phase 1 domain layer done |
 
 ---
 
@@ -59,7 +59,7 @@ so each gets its own plan once the layer beneath it is real and reviewed.
 
 ## Current position
 
-**Phase 1, Task 2.** Phase 0 is merged to `main`.
+**Phase 1, Task 7.** Phase 0 merged. Domain layer done (47 tests, 5 files); data layer next.
 
 ### Phase 0 — Repository hygiene — Done
 
@@ -73,11 +73,11 @@ still builds.
 
 Branch `feat/foundation`.
 
-- [ ] Task 2: Test infrastructure (Vitest, jsdom, fake-indexeddb)
-- [ ] Task 3: Domain — age arithmetic and formatting
-- [ ] Task 4: Domain — quality bands
-- [ ] Task 5: Domain — count confidence
-- [ ] Task 6: Domain — stock validation and jar descriptions
+- [x] Task 2: Test infrastructure (Vitest, jsdom, fake-indexeddb)
+- [x] Task 3: Domain — age arithmetic and formatting
+- [x] Task 4: Domain — quality bands
+- [x] Task 5: Domain — count confidence
+- [x] Task 6: Domain — stock validation and jar descriptions
 - [ ] Task 7: Data — database schema and seeds
 - [ ] Task 8: Data — location and jar type repositories
 - [ ] Task 9: Data — stock repository create, read, update
