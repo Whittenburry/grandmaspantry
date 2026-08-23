@@ -12,7 +12,7 @@ Prefer writing something down over remembering it.
 |---|---|
 | **Spec** | [`superpowers/specs/2026-08-22-grandmas-shop-design.md`](superpowers/specs/2026-08-22-grandmas-shop-design.md) |
 | **Active plan** | [`superpowers/plans/2026-08-22-foundation.md`](superpowers/plans/2026-08-22-foundation.md) |
-| **Last updated** | 2026-08-22 — phase 0 done, phase 1 domain layer done |
+| **Last updated** | 2026-08-23 — phases 0 and 1 complete |
 
 ---
 
@@ -47,8 +47,8 @@ conversation to reach.
 | Phase | Status | Content |
 |---|---|---|
 | 0 | **Done** | Repo hygiene: `.gitignore`, untrack `node_modules/` and the sqlite db, delete `api/` |
-| 1 | In progress | Foundation: Vitest, `domain/` and `data/` layers, test-first |
-| 2 | Not planned | Stock core: shelf, add/edit, use one, location-scoped shelf check, empty-jar return |
+| 1 | **Done** | Foundation: Vitest, `domain/` and `data/` layers, test-first |
+| 2 | **Next — needs a plan** | Stock core: shelf, add/edit, use one, location-scoped shelf check, empty-jar return |
 | 3 | Not planned | Recipes with photos |
 | 4 | Not planned | Labels: screen, single print, sheet print, QR |
 | 5 | Not planned | Backup, restore, and the backup nudge |
@@ -59,7 +59,12 @@ so each gets its own plan once the layer beneath it is real and reviewed.
 
 ## Current position
 
-**Phase 1, Task 7.** Phase 0 merged. Domain layer done (47 tests, 5 files); data layer next.
+**Phase 2 is next, and it needs a plan written before any code.** Phases 0 and 1 are
+merged to `main`.
+
+**The app does not currently run.** The four MVP views under `client/src/views/` still call
+the `/api` endpoints that Phase 0 deleted. `npm run dev` will show a broken app until
+Phase 2 replaces those views. This is expected — do not fix it by reviving the API.
 
 ### Phase 0 — Repository hygiene — Done
 
@@ -69,21 +74,27 @@ Tracked files went from 2,566 to 16. `node_modules/` and `api/database.sqlite` a
 untracked but still on disk; `api/` is deleted and recoverable at tag `v0-mvp`. The client
 still builds.
 
-### Phase 1 — Foundation
+### Phase 1 — Foundation — Done
 
-Branch `feat/foundation`.
+Merged from `feat/foundation`. **95 tests across 9 files, all passing.** `npm run build`
+exits 0.
 
 - [x] Task 2: Test infrastructure (Vitest, jsdom, fake-indexeddb)
 - [x] Task 3: Domain — age arithmetic and formatting
 - [x] Task 4: Domain — quality bands
 - [x] Task 5: Domain — count confidence
 - [x] Task 6: Domain — stock validation and jar descriptions
-- [ ] Task 7: Data — database schema and seeds
-- [ ] Task 8: Data — location and jar type repositories
-- [ ] Task 9: Data — stock repository create, read, update
-- [ ] Task 10: Data — using a jar and reconciling counts
+- [x] Task 7: Data — database schema and seeds
+- [x] Task 8: Data — location and jar type repositories
+- [x] Task 9: Data — stock repository create, read, update
+- [x] Task 10: Data — using a jar and reconciling counts
 
-Expected end state: 95 tests across 9 files, all passing.
+Actual end state: 95 tests across 9 files, all passing.
+
+**What Phase 1 built.** `domain/`: `age.js` (calendar-safe age arithmetic),
+`quality.js` (USDA bands), `confidence.js` (the honesty rule), `validation.js`,
+`jars.js`, `categories.js`. `data/`: `db.js` (versioned schema, six stores, seeded),
+`locations.js`, `jarTypes.js`, `stock.js` (CRUD plus `useOne` and `verifyCount`).
 
 ## Notes to self
 
@@ -98,7 +109,10 @@ Expected end state: 95 tests across 9 files, all passing.
 
 ## Open threads
 
-- Nothing blocking. Phases 2–6 each need a plan written when their turn comes.
+- **Write the Phase 2 plan** before writing any Phase 2 code. It should cover the shelf
+  view, add/edit forms, item detail, and the location-scoped shelf check, and it builds on
+  the interfaces listed above.
+- Phases 3–6 each need their own plan when their turn comes.
 
 ## Conventions
 
