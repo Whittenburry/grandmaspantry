@@ -12,7 +12,7 @@ Prefer writing something down over remembering it.
 |---|---|
 | **Spec** | [`superpowers/specs/2026-08-22-grandmas-shop-design.md`](superpowers/specs/2026-08-22-grandmas-shop-design.md) |
 | **Active plan** | [`superpowers/plans/2026-08-22-foundation.md`](superpowers/plans/2026-08-22-foundation.md) |
-| **Last updated** | 2026-09-06 — paused after phase 1; docs verified current |
+| **Last updated** | 2026-09-06 — paused after phase 1; status screen added |
 
 ---
 
@@ -62,9 +62,10 @@ so each gets its own plan once the layer beneath it is real and reviewed.
 **Phase 2 is next, and it needs a plan written before any code.** Phases 0 and 1 are
 merged to `main`.
 
-**The app does not currently run.** The four MVP views under `client/src/views/` still call
-the `/api` endpoints that Phase 0 deleted. `npm run dev` will show a broken app until
-Phase 2 replaces those views. This is expected — do not fix it by reviving the API.
+**`npm run dev` works and opens on a status screen** (`client/src/views/Status.vue`) that
+restates the phase position and reads live counts from IndexedDB. It is scaffolding, not a
+feature: Phase 2 replaces it with the real shelf. The four MVP views it replaced called the
+deleted `/api` endpoints and are recoverable at tag `v0-mvp`.
 
 ### Phase 0 — Repository hygiene — Done
 
@@ -98,9 +99,11 @@ Actual end state: 95 tests across 9 files, all passing.
 
 ## Notes to self
 
-- The MVP's four views under `client/src/views/` still call the deleted `/api` endpoints.
-  They are untouched until Phase 2 and **the app will not run** in between. This is expected;
-  do not "fix" it by reviving the API.
+- `Status.vue` is temporary scaffolding for the gap between phases. Phase 2 replaces it
+  with the real shelf view; do not build on it or treat its layout as a design decision.
+- **The data layer is verified against real Chrome**, not just `fake-indexeddb`: database
+  `grandmas-shop` v1 created, six stores present, ten jar types seeded, no console errors.
+  Worth repeating on a Pixel before Phase 6.
 - `resetDatabaseHandle()` must close the connection, not just null the promise — `deleteDB`
   blocks forever otherwise, and every test hangs. Caught in plan review; do not regress it.
 - Seed ids are deterministic slugs (`pint-wide`, `basement-freezer`), not UUIDs, so seeded
