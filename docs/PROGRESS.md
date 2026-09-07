@@ -10,11 +10,31 @@ Prefer writing something down over remembering it.
 
 | | |
 |---|---|
-| **Spec** | [`superpowers/specs/2026-08-22-grandmas-shop-design.md`](superpowers/specs/2026-08-22-grandmas-shop-design.md) |
-| **Active plan** | [`superpowers/plans/2026-08-22-foundation.md`](superpowers/plans/2026-08-22-foundation.md) |
+| **Spec** | [`superpowers/specs/2026-08-22-grandmas-shop-design.md`](superpowers/specs/2026-08-22-grandmas-shop-design.md) — read before designing anything |
+| **Active plan** | None. Phase 2 needs one written. |
+| **Completed plans** | [`superpowers/plans/2026-08-22-foundation.md`](superpowers/plans/2026-08-22-foundation.md) — phases 0–1, fully executed |
 | **Last updated** | 2026-09-06 — paused after phase 1; status screen added |
 
 ---
+
+## Start the next session here
+
+The work is paused in a clean, working state. Nothing is half-finished.
+
+**First actions, in order:**
+
+1. `cd client && npm install && npm run test:run` — expect **95 passed**, 9 files. If that
+   is not what you see, something drifted; find out what before writing anything.
+2. Read the spec (linked above). Several obvious-looking features are deliberately
+   excluded and the reasons are not guessable from the code.
+3. **Ask the author the batch-splitting question** in Open Threads below. It shapes the
+   Phase 2 add-item form and only the author's mother can answer it.
+4. **Write the Phase 2 plan** using the `superpowers:writing-plans` skill, modelled on the
+   completed foundation plan. Save to `docs/superpowers/plans/`.
+5. Only then write Phase 2 code, on a `feat/` branch, test-first.
+
+**Do not** start Phase 2 code before its plan exists — that is the convention this project
+has followed for every phase so far.
 
 ## The one-paragraph version
 

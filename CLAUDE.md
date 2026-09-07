@@ -4,9 +4,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Start here
 
-**Read [`docs/PROGRESS.md`](docs/PROGRESS.md) before doing anything else.** It carries the
-current position, the decisions already settled and why, and notes left for whoever picks
-the work up next. The design spec and the active implementation plan are linked from it.
+**Read [`docs/PROGRESS.md`](docs/PROGRESS.md) before doing anything else.** Its
+"Start the next session here" section lists the literal first actions. It also carries the
+decisions already settled and why, and notes left for whoever picks the work up next. The
+design spec is linked from it.
+
+**Current position:** phases 0 and 1 are done and merged. Phase 2 is next and **needs a
+written plan before any code**.
 
 ## What this is
 
