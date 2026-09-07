@@ -2,12 +2,7 @@
   <div class="app-container">
     <nav class="glass-nav">
       <h1>Grandma's Shop</h1>
-      <div class="links">
-        <router-link to="/">Dashboard</router-link>
-        <router-link to="/pantry">Pantry</router-link>
-        <router-link to="/raw-goods">Raw Goods</router-link>
-        <router-link to="/recipes">Recipes</router-link>
-      </div>
+      <span class="badge">Phase 1 complete</span>
     </nav>
     <main class="main-content">
       <router-view></router-view>
@@ -45,10 +40,16 @@
   font-family: 'Playfair Display', serif;
 }
 
-.links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.5rem;
+.badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  border: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.45);
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
 }
 
 .links a {
@@ -76,10 +77,6 @@
     flex-direction: column;
     padding: 1rem;
     text-align: center;
-  }
-  .links {
-    justify-content: center;
-    gap: 1rem;
   }
   .main-content {
     padding: 1rem;
