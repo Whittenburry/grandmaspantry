@@ -12,7 +12,7 @@ Prefer writing something down over remembering it.
 |---|---|
 | **Spec** | [`superpowers/specs/2026-08-22-grandmas-shop-design.md`](superpowers/specs/2026-08-22-grandmas-shop-design.md) |
 | **Active plan** | [`superpowers/plans/2026-08-22-foundation.md`](superpowers/plans/2026-08-22-foundation.md) |
-| **Last updated** | 2026-08-23 — phases 0 and 1 complete |
+| **Last updated** | 2026-09-06 — paused after phase 1; docs verified current |
 
 ---
 
@@ -112,6 +112,13 @@ Actual end state: 95 tests across 9 files, all passing.
 - **Write the Phase 2 plan** before writing any Phase 2 code. It should cover the shelf
   view, add/edit forms, item detail, and the location-scoped shelf check, and it builds on
   the interfaces listed above.
+- **Unanswered question, needed for the Phase 2 add-item form:** does she want to log a
+  canning session as one entry or several? Twelve half-pints of jam and six quarts of
+  tomatoes in one afternoon is two stock items — but if she splits a single batch across
+  jar sizes, the form has to handle that in one pass or she will resent it by the third
+  batch. Ask her before designing the form.
+- **The Google Fonts CDN link in `client/index.html` must go before Phase 6.** A CDN font
+  breaks an offline-first PWA. Self-host Playfair Display and Quicksand instead.
 - Phases 3–6 each need their own plan when their turn comes.
 
 ## Conventions
