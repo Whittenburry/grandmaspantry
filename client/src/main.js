@@ -4,11 +4,11 @@ import App from './App.vue'
 
 import { createRouter, createWebHistory } from 'vue-router'
 
+// One route until phase 2 brings the real screens. The status view reports
+// where the rewrite stands and checks that the data layer opens.
 const routes = [
-  { path: '/', component: () => import('./views/Dashboard.vue') },
-  { path: '/pantry', component: () => import('./views/Pantry.vue') },
-  { path: '/raw-goods', component: () => import('./views/RawGoods.vue') },
-  { path: '/recipes', component: () => import('./views/Recipes.vue') },
+  { path: '/', component: () => import('./views/Status.vue') },
+  { path: '/:pathMatch(.*)*', redirect: '/' },
 ]
 
 const router = createRouter({
